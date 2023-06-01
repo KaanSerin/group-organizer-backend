@@ -12,3 +12,11 @@ export class CreateUserValidator {
   @IsNotEmpty()
   roleId: number;
 }
+
+export class LoginUserValidator {
+  @IsString()
+  username: string;
+
+  @IsString()
+  password: string;
+}
