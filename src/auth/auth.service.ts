@@ -16,7 +16,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new HttpException('Invalid credentials', HttpStatus.NOT_FOUND);
+      throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
     }
 
     if (!(await bcrypt.compare(data.password, user.password))) {
