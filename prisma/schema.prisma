@@ -11,15 +11,16 @@ datasource db {
 }
 
 model User {
-  id        Int         @id @default(autoincrement())
-  email     String      @unique
-  username  String      @unique
+  id        Int              @id @default(autoincrement())
+  email     String           @unique
+  username  String           @unique
   password  String
-  createdAt DateTime    @default(now()) @map("created_at")
-  updatedAt DateTime    @updatedAt @map("updated_at")
-  role      UserRole    @relation(fields: [roleId], references: [id])
-  roleId    Int         @map("role_id")
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+  role      UserRole         @relation(fields: [roleId], references: [id])
+  roleId    Int              @map("role_id")
   groups    UserGroup[]
+  events    UserGroupEvent[]
 
   @@map("users")
 }
@@ -37,12 +38,14 @@ model UserRole {
 }
 
 model Group {
-  id        Int         @id @default(autoincrement())
-  name      String
-  isActive  Boolean     @default(true) @map("is_active")
-  createdAt DateTime    @default(now()) @map("created_at")
-  updatedAt DateTime    @updatedAt @map("updated_at")
-  users     UserGroup[]
+  id             Int              @id @default(autoincrement())
+  name           String
+  isActive       Boolean          @default(true) @map("is_active")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  users          UserGroup[]
+  GroupEvent     GroupEvent[]
+  UserGroupEvent UserGroupEvent[]
 
   @@map("groups")
 }
@@ -58,4 +61,31 @@ model UserGroup {
   Group     Group    @relation(fields: [groupId], references: [id])
 
   @@map("user_groups")
+}
+
+model GroupEvent {
+  id        Int              @id @default(autoincrement())
+  name      String
+  groupId   Int              @map("group_id")
+  isActive  Boolean          @default(true) @map("is_active")
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+  group     Group            @relation(fields: [groupId], references: [id])
+  users     UserGroupEvent[]
+
+  @@map("group_events")
+}
+
+model UserGroupEvent {
+  id         Int        @id @default(autoincrement())
+  userId     Int        @map("user_id")
+  groupId    Int        @map("group_id")
+  eventId    Int        @map("event_id")
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  User       User       @relation(fields: [userId], references: [id])
+  Group      Group      @relation(fields: [groupId], references: [id])
+  GroupEvent GroupEvent @relation(fields: [eventId], references: [id])
+
+  @@map("user_group_events")
 }
