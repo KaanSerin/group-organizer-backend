@@ -11,17 +11,18 @@ datasource db {
 }
 
 model User {
-  id          Int                   @id @default(autoincrement())
-  email       String                @unique
-  username    String                @unique
-  password    String
-  createdAt   DateTime              @default(now()) @map("created_at")
-  updatedAt   DateTime              @updatedAt @map("updated_at")
-  role        UserRoleType          @relation(fields: [roleId], references: [id])
-  roleId      Int                   @map("role_id")
-  groups      UserGroup[]
-  events      UserGroupEvent[]
-  pollOptions UserGroupPollOption[]
+  id            Int                   @id @default(autoincrement())
+  email         String                @unique
+  username      String                @unique
+  password      String
+  createdAt     DateTime              @default(now()) @map("created_at")
+  updatedAt     DateTime              @updatedAt @map("updated_at")
+  role          UserRoleType          @relation(fields: [roleId], references: [id])
+  roleId        Int                   @map("role_id")
+  groups        UserGroup[]
+  events        UserGroupEvent[]
+  pollOptions   UserGroupPollOption[]
+  createdGroups Group[]
 
   @@map("users")
 }
@@ -39,11 +40,14 @@ model UserRoleType {
 }
 
 model Group {
-  id              Int              @id @default(autoincrement())
-  name            String
-  isActive        Boolean          @default(true) @map("is_active")
-  createdAt       DateTime         @default(now()) @map("created_at")
-  updatedAt       DateTime         @updatedAt @map("updated_at")
+  id            Int      @id @default(autoincrement())
+  name          String
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  createdBy     Int      @map("created_by")
+  createdByUser User     @relation(fields: [createdBy], references: [id])
+
   users           UserGroup[]
   groupEvents     GroupEvent[]
   usergroupEvents UserGroupEvent[]
