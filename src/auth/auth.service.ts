@@ -24,7 +24,7 @@ export class AuthService {
     }
 
     const payload = { id: user.id, username: user.username };
-    return { access_token: await this.jwtService.sign(payload) };
+    return { access_token: await this.jwtService.signAsync(payload) };
   }
 
   async register(data: CreateUserValidator) {
