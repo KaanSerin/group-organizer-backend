@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { CreateUserValidator, LoginUserValidator } from '../validators';
+import { CreateUserDto, LoginUserDto } from '../validators';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
-  async login(data: LoginUserValidator) {
+  async login(data: LoginUserDto) {
     const user = await this.prisma.user.findFirst({
       where: {
         username: data.username,
@@ -27,7 +27,7 @@ export class AuthService {
     return { access_token: await this.jwtService.signAsync(payload) };
   }
 
-  async register(data: CreateUserValidator) {
+  async register(data: CreateUserDto) {
     const emailInUse = await this.prisma.user.findFirst({
       where: {
         email: data.email,

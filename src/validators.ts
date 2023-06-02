@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-export class CreateUserValidator {
+export class CreateUserDto {
   @IsEmail()
   email: string;
 
@@ -13,10 +13,15 @@ export class CreateUserValidator {
   roleId: number;
 }
 
-export class LoginUserValidator {
+export class LoginUserDto {
   @IsString()
   username: string;
 
   @IsString()
   password: string;
+}
+
+export class CreateGroupDto {
+  @IsString()
+  name: string;
 }
