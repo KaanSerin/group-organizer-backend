@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { GlobalsModule } from './globals.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
@@ -17,7 +15,5 @@ import { GroupsProtectedModule } from './groups-protected/groups-protected.modul
     GroupsProtectedModule,
     GroupsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
