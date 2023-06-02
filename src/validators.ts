@@ -25,3 +25,11 @@ export class CreateGroupDto {
   @IsString()
   name: string;
 }
+
+export class JoinGroupDto {
+  @IsNotEmpty()
+  userId: number;
+
+  @IsNotEmpty()
+  groupId: number;
+}
