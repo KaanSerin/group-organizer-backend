@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User, UserRole } from '@prisma/client';
+import { User, UserRoleType } from '@prisma/client';
 
 @Controller('users')
 export class UsersController {
@@ -12,8 +12,8 @@ export class UsersController {
   }
 
   @Get('roles')
-  async userRoles(): Promise<UserRole[]> {
-    return this.userService.userRoles();
+  async userRoles(): Promise<UserRoleType[]> {
+    return this.userService.userRoleTypes();
   }
 
   @Get(':id')

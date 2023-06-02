@@ -51,7 +51,7 @@ export class AuthService {
       );
     }
 
-    const role = await this.prisma.userRole.findFirst({
+    const role = await this.prisma.userRoleType.findFirst({
       where: {
         id: data.roleId,
       },
