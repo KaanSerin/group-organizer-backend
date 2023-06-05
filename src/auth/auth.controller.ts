@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Post,
   Request,
   Res,
@@ -48,5 +49,19 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('logout')
+  logout(@Request() req, @Res({ passthrough: true }) res: Response) {
+    res.cookie('auth', '', {
+      secure: true,
+      httpOnly: true,
+      sameSite: 'none',
+      maxAge: 0,
+    });
+
+    res.status(HttpStatus.NO_CONTENT);
+    return;
   }
 }
