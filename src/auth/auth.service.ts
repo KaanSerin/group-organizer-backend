@@ -3,12 +3,15 @@ import { PrismaService } from '../prisma.service';
 import { CreateUserDto, LoginUserDto } from '../validators';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
-  async login(data: LoginUserDto) {
+  async login(
+    data: LoginUserDto,
+  ): Promise<{ access_token: string; user: User }> {
     const user = await this.prisma.user.findFirst({
       where: {
         username: data.username,
@@ -24,7 +27,8 @@ export class AuthService {
     }
 
     const payload = { id: user.id, username: user.username };
-    return { access_token: await this.jwtService.signAsync(payload) };
+    delete user.password;
+    return { access_token: await this.jwtService.signAsync(payload), user };
   }
 
   async register(data: CreateUserDto) {
