@@ -76,7 +76,9 @@ export class AuthService {
       });
 
       const payload = { id: user.id, username: user.username };
-      return { access_token: await this.jwtService.signAsync(payload) };
+
+      delete user.password;
+      return { access_token: await this.jwtService.signAsync(payload), user };
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }

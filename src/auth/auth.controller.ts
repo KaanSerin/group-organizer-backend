@@ -36,8 +36,12 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const authResponse = await this.authService.register(data);
-    res.cookie('auth', authResponse.access_token);
-    return authResponse;
+    res.cookie('auth', authResponse.access_token, {
+      secure: true,
+      httpOnly: true,
+      sameSite: 'none',
+    });
+    return authResponse.user;
   }
 
   @UseGuards(AuthGuard)
