@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Group } from '@prisma/client';
 import { JoinGroupDto } from '../validators';
+import { UserGroupResponse } from '../../types/types';
 
 @Injectable()
 export class GroupsService {
@@ -64,6 +65,47 @@ export class GroupsService {
         groupId: data.groupId,
         userRoleId: groupMemberType.id,
       },
+    });
+  }
+
+  async getGroupsByUserId(userId: number): Promise<UserGroupResponse[]> {
+    const userGroups = await this.prisma.userGroup.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        group: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            createdBy: true,
+            createdAt: false,
+            updatedAt: false,
+            bannerImageUrl: true,
+            isActive: true,
+            _count: {
+              select: {
+                users: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return userGroups.map((userGroup) => {
+      const group = userGroup.group;
+      delete group.createdBy;
+
+      const members = group._count.users;
+      delete group._count;
+      return {
+        ...group,
+        isOwner: group.createdBy === userId,
+        joined: true,
+        members,
+      };
     });
   }
 }

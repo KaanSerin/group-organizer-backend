@@ -6,15 +6,22 @@ import {
   Post,
   Req,
   UseGuards,
+  Param,
 } from '@nestjs/common';
 import { GroupsService } from '../groups/groups.service';
 import { CreateGroupDto } from '../validators';
 import { AuthGuard } from '../auth/auth.guard';
+import { Request } from 'express';
 
 @UseGuards(AuthGuard)
 @Controller('groups')
 export class GroupsProtectedController {
   constructor(private groupService: GroupsService) {}
+
+  @Get('user_groups')
+  async getGroup(@Req() req: Request, @Param('id') id: string) {
+    return this.groupService.getGroupsByUserId(req['user']['id']);
+  }
 
   @Get()
   async getGroups() {
