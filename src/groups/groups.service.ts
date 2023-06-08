@@ -96,13 +96,14 @@ export class GroupsService {
 
     return userGroups.map((userGroup) => {
       const group = userGroup.group;
+      const isOwner = group.createdBy === userId;
       delete group.createdBy;
 
       const members = group._count.users;
       delete group._count;
       return {
         ...group,
-        isOwner: group.createdBy === userId,
+        isOwner,
         joined: true,
         members,
       };
