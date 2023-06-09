@@ -15,6 +15,12 @@ model User {
   email         String                @unique
   username      String                @unique
   password      String
+  firstName     String?               @map("first_name") @db.VarChar(50)
+  lastName      String?               @map("last_name") @db.VarChar(50)
+  bio           String?
+  gender        String?
+  profilePicUrl String?               @map("profile_pic_url")
+  phone         String?
   createdAt     DateTime              @default(now()) @map("created_at")
   updatedAt     DateTime              @updatedAt @map("updated_at")
   role          UserRoleType          @relation(fields: [roleId], references: [id])
