@@ -24,6 +24,8 @@ export class LoginUserDto {
 export class CreateGroupDto {
   @IsString()
   name: string;
+  description?: string;
+  createdBy: number;
 }
 
 export class JoinGroupDto {

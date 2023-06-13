@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Group } from '@prisma/client';
-import { JoinGroupDto } from '../validators';
+import { CreateGroupDto, JoinGroupDto } from '../validators';
 import { UserGroupResponse } from '../../types/types';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class GroupsService {
     });
   }
 
-  async createGroup(data): Promise<Group> {
+  async createGroup(data: CreateGroupDto): Promise<Group> {
     const group = await this.prisma.group.create({
       data,
     });
