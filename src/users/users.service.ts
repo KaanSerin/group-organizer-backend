@@ -20,4 +20,19 @@ export class UsersService {
   async userRoleTypes(): Promise<UserRoleType[]> {
     return this.prisma.userRoleType.findMany();
   }
+
+  async updateUser(user: User): Promise<User> {
+    return this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        gender: user.gender,
+        bio: user.bio,
+        phone: user.phone,
+      },
+    });
+  }
 }
