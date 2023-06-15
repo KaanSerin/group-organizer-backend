@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Group } from '@prisma/client';
+import { Group, GroupEvent } from '@prisma/client';
 import { CreateGroupDto, JoinGroupDto } from '../validators';
 import { UserGroupResponse } from '../../types/types';
 
@@ -12,9 +12,14 @@ export class GroupsService {
     return this.prisma.group.findMany();
   }
 
-  async getGroup(id: number): Promise<Group | null> {
+  async getGroup(id: number): Promise<Group & { groupEvents: GroupEvent[] }> {
     return this.prisma.group.findFirst({
       where: { id },
+      include: {
+        groupEvents: {
+          take: 10,
+        },
+      },
     });
   }
 
@@ -107,6 +112,18 @@ export class GroupsService {
         joined: true,
         members,
       };
+    });
+  }
+
+  async getEventsPaginatedForGroupId(groupId: number, cursor?: number) {
+    return this.prisma.groupEvent.findMany({
+      take: 10,
+      cursor: {
+        id: cursor,
+      },
+      where: {
+        groupId: groupId,
+      },
     });
   }
 }
