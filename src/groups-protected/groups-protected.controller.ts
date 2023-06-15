@@ -43,4 +43,12 @@ export class GroupsProtectedController {
       userId: req.user.id,
     });
   }
+
+  @Get(':id/events')
+  async getEvents(@Param('id') id: string, @Query('cursor') cursor: string) {
+    return this.groupService.getEventsPaginatedForGroupId(
+      Number(id),
+      Number(cursor),
+    );
+  }
 }
