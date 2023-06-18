@@ -29,6 +29,7 @@ model User {
   events        UserGroupEvent[]
   pollOptions   UserGroupPollOption[]
   createdGroups Group[]
+  GroupEvent    GroupEvent[]
 
   @@map("users")
 }
@@ -96,10 +97,12 @@ model GroupEvent {
   isActive      Boolean          @default(true) @map("is_active")
   eventDate     DateTime         @map("event_date")
   eventImageUrl String?          @map("event_image_url")
+  createdBy     Int              @map("created_by")
   createdAt     DateTime         @default(now()) @map("created_at")
   updatedAt     DateTime         @updatedAt @map("updated_at")
   group         Group            @relation(fields: [groupId], references: [id])
   users         UserGroupEvent[]
+  createdByUser User             @relation(fields: [createdBy], references: [id])
 
   @@map("group_events")
 }

@@ -172,6 +172,7 @@ export class GroupsService {
           ...data,
           eventDate: new Date(data.eventDate),
           eventImageUrl: group.bannerImageUrl,
+          createdBy: user.id,
         },
       });
     } catch (e) {
