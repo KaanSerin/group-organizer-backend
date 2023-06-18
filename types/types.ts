@@ -22,5 +22,6 @@ export interface GroupEventResponse {
   eventDate: Date;
   eventImageUrl: string;
   createUserId: number;
+  createUserName: string;
   createUserImageUrl: string;
 }

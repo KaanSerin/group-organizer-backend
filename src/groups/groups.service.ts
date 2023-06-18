@@ -141,6 +141,8 @@ export class GroupsService {
       include: {
         createdByUser: {
           select: {
+            firstName: true,
+            lastName: true,
             profilePicUrl: true,
           },
         },
@@ -154,6 +156,7 @@ export class GroupsService {
       eventDate: groupEvent.eventDate,
       eventImageUrl: groupEvent.eventImageUrl,
       createUserId: groupEvent.createdBy,
+      createUserName: `${groupEvent.createdByUser.firstName} ${groupEvent.createdByUser.lastName}`,
       createUserImageUrl: groupEvent.createdByUser.profilePicUrl,
     }));
   }
