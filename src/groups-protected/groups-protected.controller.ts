@@ -9,9 +9,10 @@ import {
   Param,
 } from '@nestjs/common';
 import { GroupsService } from '../groups/groups.service';
-import { CreateGroupDto } from '../validators';
+import { CreateGroupDto, CreateGroupEventDto } from '../validators';
 import { AuthGuard } from '../auth/auth.guard';
 import { Request } from 'express';
+import { RequestWithUser } from '../../types/types';
 
 @UseGuards(AuthGuard)
 @Controller('groups')
@@ -50,5 +51,13 @@ export class GroupsProtectedController {
       Number(id),
       Number(cursor),
     );
+  }
+
+  @Post('events')
+  async createEvent(
+    @Req() req: RequestWithUser,
+    @Body() body: CreateGroupEventDto,
+  ) {
+    return this.groupService.createGroupEvent(req.user, body);
   }
 }

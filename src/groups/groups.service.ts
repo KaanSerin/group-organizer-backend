@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Group, GroupEvent } from '@prisma/client';
-import { CreateGroupDto, JoinGroupDto } from '../validators';
+import { Group, GroupEvent, User } from '@prisma/client';
+import {
+  CreateGroupDto,
+  CreateGroupEventDto,
+  JoinGroupDto,
+} from '../validators';
 import { UserGroupResponse } from '../../types/types';
 
 @Injectable()
@@ -125,5 +129,56 @@ export class GroupsService {
         groupId: groupId,
       },
     });
+  }
+
+  async createGroupEvent(user: User, data: CreateGroupEventDto) {
+    const group = await this.prisma.group.findFirst({
+      where: {
+        id: data.groupId,
+      },
+    });
+
+    if (!group) {
+      throw new HttpException('Group not found', HttpStatus.BAD_REQUEST);
+    }
+
+    const userGroup = await this.prisma.userGroup.findFirst({
+      where: {
+        userId: user.id,
+        groupId: data.groupId,
+      },
+    });
+
+    if (!userGroup) {
+      throw new HttpException('User not in group', HttpStatus.UNAUTHORIZED);
+    }
+
+    const userGroupRole = await this.prisma.groupRoleType.findFirst({
+      where: {
+        id: userGroup.userRoleId,
+      },
+    });
+
+    if (!userGroupRole.isAdmin) {
+      throw new HttpException(
+        'User not admin of group',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    try {
+      return await this.prisma.groupEvent.create({
+        data: {
+          ...data,
+          eventDate: new Date(data.eventDate),
+          eventImageUrl: group.bannerImageUrl,
+        },
+      });
+    } catch (e) {
+      throw new HttpException(
+        'Error creating event',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
