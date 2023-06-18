@@ -95,7 +95,7 @@ model GroupEvent {
   groupId       Int              @map("group_id")
   isActive      Boolean          @default(true) @map("is_active")
   eventDate     DateTime         @map("event_date")
-  eventImageUrl String?          @map("banner_image_url")
+  eventImageUrl String?          @map("event_image_url")
   createdAt     DateTime         @default(now()) @map("created_at")
   updatedAt     DateTime         @updatedAt @map("updated_at")
   group         Group            @relation(fields: [groupId], references: [id])
