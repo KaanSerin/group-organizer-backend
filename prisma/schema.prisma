@@ -90,15 +90,16 @@ model UserGroup {
 }
 
 model GroupEvent {
-  id        Int              @id @default(autoincrement())
-  name      String
-  groupId   Int              @map("group_id")
-  isActive  Boolean          @default(true) @map("is_active")
-  eventDate DateTime         @map("event_date")
-  createdAt DateTime         @default(now()) @map("created_at")
-  updatedAt DateTime         @updatedAt @map("updated_at")
-  group     Group            @relation(fields: [groupId], references: [id])
-  users     UserGroupEvent[]
+  id            Int              @id @default(autoincrement())
+  name          String
+  groupId       Int              @map("group_id")
+  isActive      Boolean          @default(true) @map("is_active")
+  eventDate     DateTime         @map("event_date")
+  eventImageUrl String?          @map("banner_image_url")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+  group         Group            @relation(fields: [groupId], references: [id])
+  users         UserGroupEvent[]
 
   @@map("group_events")
 }
