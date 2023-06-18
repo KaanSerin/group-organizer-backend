@@ -1,3 +1,5 @@
+import { User } from '@prisma/client';
+
 export interface UserGroupResponse {
   id: number;
   name: string;
@@ -7,4 +9,8 @@ export interface UserGroupResponse {
   isOwner: boolean;
   joined: boolean;
   members: number;
+}
+
+export interface RequestWithUser extends Request {
+  user: User;
 }
