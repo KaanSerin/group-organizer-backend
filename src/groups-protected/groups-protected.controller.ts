@@ -49,7 +49,7 @@ export class GroupsProtectedController {
   async getEvents(@Param('id') id: string, @Query('cursor') cursor: string) {
     return this.groupService.getEventsPaginatedForGroupId(
       Number(id),
-      Number(cursor),
+      cursor ? Number(cursor) : undefined,
     );
   }
 

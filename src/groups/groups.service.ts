@@ -6,7 +6,7 @@ import {
   CreateGroupEventDto,
   JoinGroupDto,
 } from '../validators';
-import { UserGroupResponse } from '../../types/types';
+import { GroupEventResponse, UserGroupResponse } from '../../types/types';
 
 @Injectable()
 export class GroupsService {
@@ -119,16 +119,43 @@ export class GroupsService {
     });
   }
 
-  async getEventsPaginatedForGroupId(groupId: number, cursor?: number) {
-    return this.prisma.groupEvent.findMany({
+  async getEventsPaginatedForGroupId(
+    groupId: number,
+    cursor?: number,
+  ): Promise<GroupEventResponse[]> {
+    const queryArgs = {
       take: 10,
-      cursor: {
-        id: cursor,
-      },
       where: {
         groupId: groupId,
       },
+    };
+
+    if (cursor) {
+      queryArgs['cursor'] = {
+        id: cursor,
+      };
+    }
+
+    const groupEvents = await this.prisma.groupEvent.findMany({
+      ...queryArgs,
+      include: {
+        createdByUser: {
+          select: {
+            profilePicUrl: true,
+          },
+        },
+      },
     });
+
+    return groupEvents.map((groupEvent) => ({
+      id: groupEvent.id,
+      name: groupEvent.name,
+      isActive: groupEvent.isActive,
+      eventDate: groupEvent.eventDate,
+      eventImageUrl: groupEvent.eventImageUrl,
+      createUserId: groupEvent.createdBy,
+      createUserImageUrl: groupEvent.createdByUser.profilePicUrl,
+    }));
   }
 
   async createGroupEvent(user: User, data: CreateGroupEventDto) {

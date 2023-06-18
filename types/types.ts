@@ -14,3 +14,13 @@ export interface UserGroupResponse {
 export interface RequestWithUser extends Request {
   user: User;
 }
+
+export interface GroupEventResponse {
+  id: number;
+  name: string;
+  isActive: boolean;
+  eventDate: Date;
+  eventImageUrl: string;
+  createUserId: number;
+  createUserImageUrl: string;
+}
