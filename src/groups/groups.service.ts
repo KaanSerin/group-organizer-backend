@@ -6,7 +6,11 @@ import {
   CreateGroupEventDto,
   JoinGroupDto,
 } from '../validators';
-import { GroupEventResponse, UserGroupResponse } from '../../types/types';
+import {
+  GroupEventResponse,
+  PaginatedResponse,
+  UserGroupResponse,
+} from '../../types/types';
 
 @Injectable()
 export class GroupsService {
@@ -210,6 +214,50 @@ export class GroupsService {
         'Error creating event',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  async getMembersPaginatedForGroupId(
+    groupId: number,
+    page: number,
+    pageLength: number,
+  ): Promise<PaginatedResponse<User>> {
+    try {
+      const [count, users] = await this.prisma.$transaction([
+        this.prisma.userGroup.count({
+          where: {
+            groupId,
+          },
+        }),
+        this.prisma.userGroup.findMany({
+          where: {
+            groupId,
+          },
+          include: {
+            user: true,
+          },
+          skip: page * pageLength,
+          take: pageLength,
+          orderBy: {
+            userId: 'asc',
+          },
+        }),
+      ]);
+
+      return {
+        data: users.map((groupMember) => {
+          const user = groupMember.user;
+          delete user.password;
+          return user;
+        }),
+        meta: {
+          total: count,
+          page,
+          pageLength,
+        },
+      };
+    } catch (e) {
+      console.log(e);
     }
   }
 }

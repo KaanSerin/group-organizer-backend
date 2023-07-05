@@ -7,6 +7,8 @@ import {
   Req,
   UseGuards,
   Param,
+  ParseIntPipe,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { GroupsService } from '../groups/groups.service';
 import { CreateGroupDto, CreateGroupEventDto } from '../validators';
@@ -59,5 +61,19 @@ export class GroupsProtectedController {
     @Body() body: CreateGroupEventDto,
   ) {
     return this.groupService.createGroupEvent(req.user, body);
+  }
+
+  @Get(':id/members')
+  async getMembers(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('page', new DefaultValuePipe(0), ParseIntPipe) page: number,
+    @Query('pageLength', new DefaultValuePipe(15), ParseIntPipe)
+    pageLength: number,
+  ) {
+    return this.groupService.getMembersPaginatedForGroupId(
+      id,
+      page,
+      pageLength,
+    );
   }
 }
