@@ -25,3 +25,12 @@ export interface GroupEventResponse {
   createUserName: string;
   createUserImageUrl: string;
 }
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    pageLength: number;
+  };
+}
