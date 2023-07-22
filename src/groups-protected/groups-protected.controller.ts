@@ -48,9 +48,16 @@ export class GroupsProtectedController {
   }
 
   @Get(':id/events')
-  async getEvents(@Param('id') id: string, @Query('cursor') cursor: string) {
+  async getEvents(
+    @Param('id') id: string,
+    @Query('pageLength', new DefaultValuePipe(5), ParseIntPipe)
+    pageLength: number,
+    @Query('cursor') cursor?: string,
+  ) {
+    console.log(cursor);
     return this.groupService.getEventsPaginatedForGroupId(
       Number(id),
+      pageLength,
       cursor ? Number(cursor) : undefined,
     );
   }

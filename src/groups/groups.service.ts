@@ -125,10 +125,11 @@ export class GroupsService {
 
   async getEventsPaginatedForGroupId(
     groupId: number,
+    pageLength: number,
     cursor?: number,
   ): Promise<GroupEventResponse[]> {
     const queryArgs = {
-      take: 10,
+      take: pageLength,
       where: {
         groupId: groupId,
       },
