@@ -54,7 +54,6 @@ export class GroupsProtectedController {
     pageLength: number,
     @Query('cursor') cursor?: string,
   ) {
-    console.log(cursor);
     return this.groupService.getEventsPaginatedForGroupId(
       Number(id),
       pageLength,
@@ -81,6 +80,20 @@ export class GroupsProtectedController {
       id,
       page,
       pageLength,
+    );
+  }
+
+  @Get('upcoming_events')
+  async getUpcomingEvents(
+    @Req() req,
+    @Query('pageLength', new DefaultValuePipe(5), ParseIntPipe)
+    pageLength: number,
+    @Query('cursor') cursor?: string,
+  ) {
+    return this.groupService.getUpcomingEventsPaginated(
+      req.user.id,
+      pageLength,
+      cursor ? Number(cursor) : undefined,
     );
   }
 }

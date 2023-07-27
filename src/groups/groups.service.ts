@@ -46,8 +46,6 @@ export class GroupsService {
       throw new Error('Group member type not found');
     }
 
-    console.log(group, groupMemberType);
-
     await this.prisma.userGroup.create({
       data: {
         groupId: group.id,
@@ -69,8 +67,6 @@ export class GroupsService {
     if (!groupMemberType) {
       throw new Error('Group member type not found');
     }
-
-    console.log(groupMemberType);
 
     return this.prisma.userGroup.create({
       data: {
@@ -260,5 +256,71 @@ export class GroupsService {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  async getUpcomingEventsPaginated(
+    userId: number,
+    pageLength: number,
+    cursor?: number,
+  ): Promise<GroupEventResponse[]> {
+    const queryArgs = {
+      take: pageLength,
+    };
+    if (cursor) {
+      queryArgs['cursor'] = {
+        id: cursor,
+      };
+    }
+
+    const userGroups = await this.prisma.userGroup.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        group: {
+          include: {
+            groupEvents: {
+              ...queryArgs,
+              include: {
+                createdByUser: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    profilePicUrl: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            profilePicUrl: true,
+          },
+        },
+      },
+    });
+
+    let events = [];
+
+    userGroups.forEach((userGroup) => {
+      events = [
+        ...events,
+        ...userGroup.group.groupEvents.map((groupEvent) => ({
+          id: groupEvent.id,
+          name: groupEvent.name,
+          isActive: groupEvent.isActive,
+          eventDate: groupEvent.eventDate,
+          eventImageUrl: groupEvent.eventImageUrl,
+          createUserId: groupEvent.createdBy,
+          createUserName: `${groupEvent.createdByUser.firstName} ${groupEvent.createdByUser.lastName}`,
+          createUserImageUrl: groupEvent.createdByUser.profilePicUrl,
+        })),
+      ];
+    });
+
+    return events;
   }
 }
